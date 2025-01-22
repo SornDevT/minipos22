@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <h1>Hello Laravel V11</h1>
+    <h1>Hello Laravel V11</h1> <h2> my app v1 </h2>
 
     <hr>
 
