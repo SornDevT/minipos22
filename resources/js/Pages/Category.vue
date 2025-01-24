@@ -1,7 +1,6 @@
 <template lang="">
     <div>
-        <h1>Transaction</h1>
-        <button type="button" class="btn btn-info rounded-pill">Info</button>
+        <h1>Category</h1>
     </div>
 </template>
 <script>

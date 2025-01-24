@@ -1,0 +1,49 @@
+All Table 
+
+1.  Table: Store (Model)
+    Fill            Fill Type 
+    - name          string
+    - category_id   integer
+    - image         string 
+    - qty           integer
+    - price_buy     integer
+    - price_sell    integer 
+
+2.  Table:  Transaction (Model)
+    Fill            Fill Type 
+    - tran_id       string 
+    - tran_type     string  
+    - product_id    integer
+    - qty           integer
+    - price         integer
+    - detail        string 
+
+3.  Table:  User (Model)
+    - name          string 
+    - email         string 
+    - password      string 
+
+4.  Table:  Bill (Model)
+    Fill            Fill Type 
+    - bill_id       string
+    - customer_name string 
+    - customer_tel  string
+
+5.  Table: BillList (Model)
+    Fill            Fill Type 
+    - bill_id       string
+    - name          string 
+    - qty           integer
+    - price         integer
+
+6.  Table:  Category (Model)
+    Fill            Fill Type 
+    - name          string
+
+All Controller 
+
+    - StoreController       ຈັດການຂໍ້ມູນສິນຄ້າ
+    - UserController        ຈັດການຜູ້ໃຊ້
+    - TransactionController ຈັດການທຸລະກຳ ການເຄື່ອນໄຫວ ທີ່ເກີດຂື້ນ
+    - BillController        ຈັດການຂໍ້ມູນໃບບິນ
+    - ReportController      ຈັດການຂໍ້ມູນລາຍງານ
