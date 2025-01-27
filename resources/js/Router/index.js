@@ -18,18 +18,22 @@ const authMiddleware = (to, from, next) => {
     // ກວດ token ຈາກ localStorage
     const token = localStorage.getItem('web_token');
     const user = localStorage.getItem('web_user');
+    // console.log(user);
     const store = useStore();
 
     if(token){
         store.setToken(token);
-        store.setUser(JSON.parse(user));
+        store.setUser(user);
+        next();
+        // console.log('middleware next');
     } else {
+        // console.log('middleware no ');
         next({
             path: '/login',
             replace: true
         });
     }
-
+        
 };
 
 const routes = [
@@ -111,7 +115,9 @@ router.beforeEach((to,from,next)=>{
     const token = localStorage.getItem('web_token');
     if(to.meta.middleware){
         to.meta.middleware.forEach(middleware=>middleware(to,from,next))
+        // console.log(token);
     } else {
+        
         if(to.path == '/login' || to.path == '/'){
             if(token){
                 next({

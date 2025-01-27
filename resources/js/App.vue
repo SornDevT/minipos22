@@ -12,7 +12,7 @@
 
 <!-- Menu -->
 
-    <SideMenu />
+    <SideMenu  v-if="store.getToken"/>
 
 <!-- / Menu -->
 
@@ -30,7 +30,7 @@
 
 
 
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+<nav v-if="store.getToken" class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
   
 
   
@@ -126,8 +126,8 @@
                 <div class="dropdown-divider my-1"></div>
               </li>
               <li>
-                <a class="dropdown-item" href="javascript:void(0);">
-                  <i class="bx bx-power-off bx-md me-3"></i><span>Log Out</span>
+                <a class="dropdown-item" @click="Logout()" href="javascript:void(0);">
+                  <i class="bx bx-power-off bx-md me-3"></i><span>ອອກຈາກລະບົບ</span>
                 </a>
               </li>
             </ul>
@@ -154,7 +154,7 @@
         <!-- Content -->
         
           <div class="container-xxl flex-grow-1 container-p-y">
-            
+          
             <router-view></router-view>
 
           </div>
@@ -164,7 +164,9 @@
           
 
 <!-- Footer -->
-<footer class="content-footer footer bg-footer-theme">
+<footer class="content-footer footer bg-footer-theme" v-if="store.getToken">
+  <!-- {{ $router.currentRoute }} -->
+    {{ store.getToken }}
   <div class="container-xxl">
     <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
       <div class="text-body">
@@ -206,12 +208,40 @@
   
 </template>
 <script>
+import { useStore } from './Store/Auth';
+import axios from 'axios';
 export default {
+  setup(){
+    const store = useStore();
+    return {
+      store
+    }
+  },
     data() {
         return {
             url: window.location.href,
         }
     },
+    methods: {
+      Logout(){
+          axios.get('api/logout',{ headers: { Authorization: 'Bearer ' + this.store.getToken } }).then((res)=>{
+           
+              if(res.data.success){
+                // clear local storage
+                localStorage.removeItem('web_token');
+                localStorage.removeItem('web_user');
+
+                // clear store
+                this.store.logout();
+
+                // got to login page
+                this.$router.push('/login');
+              }
+          }).catch((err)=>{
+              console.log(err);
+          });
+      }
+    }
 }
 </script>
 <style lang="">
