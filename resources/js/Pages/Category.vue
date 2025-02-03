@@ -93,17 +93,77 @@ export default {
                 $('#FormCat').modal('show');
             }).catch(err => {
                 console.log(err);
+                if(err.response){
+                    if(err.response.status == 401){
+
+                        // clear localstorage
+                        localStorage.removeItem('web_token');
+                        localStorage.removeItem('web_user');
+
+                        // clear store
+                        this.store.logout();
+
+                        // redirect to login
+                        this.$router.push('/login');
+                    }   
+                }
             });
 
         },
         DelCat(id){
-            axios.delete(`api/category/delete/${id}`,{ headers:{ Authorization: 'Bearer '+this.store.getToken} }).then(res => {
-                if(res.data.success){
-                    this.GetCat();
+
+
+
+            this.$swal({
+                title: "ທ່ານແນ່ໃຈບໍ່?",
+                text: "ທີ່ຈະລຶບຂໍ້ມູນນີ້!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "ຍືນຍັນ!",
+                cancelButtonText: "ຍົກເລີກ"
+                }).then((result) => {
+                if (result.isConfirmed) {
+
+
+                    axios.delete(`api/category/delete/${id}`,{ headers:{ Authorization: 'Bearer '+this.store.getToken} }).then(res => {
+                        if(res.data.success){
+                            this.GetCat();
+                            this.$swal({
+                                        title: "ການລຶບຂໍ້ມູນ!",
+                                        text: res.data.message,
+                                        icon: "success",
+                                        showConfirmButton: false,
+                                        timer: 2500
+                                    });
+                        } else {
+                            this.$swal({
+                                title: "ຜິດຜາດ!",
+                                text: res.data.message,
+                                icon: "error"
+                            });
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                        if(err.response){
+                            if(err.response.status == 401){
+
+                                // clear localstorage
+                                localStorage.removeItem('web_token');
+                                localStorage.removeItem('web_user');
+
+                                // clear store
+                                this.store.logout();
+
+                                // redirect to login
+                                this.$router.push('/login');
+                            }   
+                        }
+                    });
+                   
                 }
-            }).catch(err => {
-                console.log(err);
-            });
+                });   
         },
         SaveCat(){
             
@@ -116,10 +176,41 @@ export default {
                         // close modal
                         $('#FormCat').modal('hide');
                         this.GetCat();
+
+                        this.$swal({
+                            toast: true,
+                            position: "top-end",
+                            icon: "success",
+                            title: res.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        this.$swal({
+                            icon: "error",
+                            title: "ຜິດຜາດ!",
+                            text: res.data.message,
+                            showConfirmButton: false,
+                            timer: 3500
+                        });
                     }
                
                 }).catch(err => {
                     console.log(err);
+                    if(err.response){
+                    if(err.response.status == 401){
+
+                        // clear localstorage
+                        localStorage.removeItem('web_token');
+                        localStorage.removeItem('web_user');
+
+                        // clear store
+                        this.store.logout();
+
+                        // redirect to login
+                        this.$router.push('/login');
+                    }   
+                }
                 });
             } else {
                 // edit category
@@ -130,9 +221,40 @@ export default {
                         // close modal
                         $('#FormCat').modal('hide');
                         this.GetCat();
+
+                        this.$swal({
+                            toast: true,
+                            position: "top-end",
+                            icon: "success",
+                            title: res.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        this.$swal({
+                            icon: "error",
+                            title: "ຜິດຜາດ!",
+                            text: res.data.message,
+                            showConfirmButton: false,
+                            timer: 3500
+                        });
                     }
                 }).catch(err => {
                     console.log(err);
+                    if(err.response){
+                    if(err.response.status == 401){
+
+                        // clear localstorage
+                        localStorage.removeItem('web_token');
+                        localStorage.removeItem('web_user');
+
+                        // clear store
+                        this.store.logout();
+
+                        // redirect to login
+                        this.$router.push('/login');
+                    }   
+                }
                 });
             }
         },
@@ -140,7 +262,23 @@ export default {
             axios.get('api/category',{ headers:{ Authorization: 'Bearer '+this.store.getToken} }).then(res => {
                 this.CategoryData = res.data;
             }).catch(err => {
-                console.log(err);
+                // console.log(err.response);
+
+                if(err.response){
+                    if(err.response.status == 401){
+
+                        // clear localstorage
+                        localStorage.removeItem('web_token');
+                        localStorage.removeItem('web_user');
+
+                        // clear store
+                        this.store.logout();
+
+                        // redirect to login
+                        this.$router.push('/login');
+                    }   
+                }
+                
             });
         }
     }, 

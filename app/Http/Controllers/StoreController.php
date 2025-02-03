@@ -47,10 +47,25 @@ class StoreController extends Controller
     public function add(Request $request)
     {
         try {
+
+            // path image
+            $upload_path = "assets/img";
+
+            // upload image
+            if($request->hasFile('image')) {
+                // generate image name
+                $image_name = "img".time().'.'.$request->image->getClientOriginalExtension();
+                // upload image
+                $request->image->move(public_path($upload_path), $image_name);
+            } else {
+                $image_name = null;
+            }   
+
+
             $store = new Store();
             $store->name = $request->name;
             $store->category_id = $request->category_id;
-            $store->image = $request->image;
+            $store->image = $image_name;
             $store->qty = $request->qty;
             $store->price_buy = $request->price_buy;
             $store->price_sell = $request->price_sell;

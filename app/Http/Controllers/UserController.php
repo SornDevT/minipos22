@@ -51,7 +51,7 @@ class UserController extends Controller
             // check remember me
             if($request->remember_me == 'true') {
                 // set ttl
-                JWTAuth::factory()->setTTL(60*24*7);
+                JWTAuth::factory()->setTTL(60*24*7*4);
             }
 
             // check if the user is authenticated
