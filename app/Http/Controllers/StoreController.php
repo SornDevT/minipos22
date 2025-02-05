@@ -95,14 +95,78 @@ class StoreController extends Controller
     public function update(Request $request, $id)
     {
         try {
+
+
+            // path image
+            $upload_path = "assets/img";
+
             $store = Store::find($id);
-            $store->name = $request->name;
-            $store->category_id = $request->category_id;
-            $store->image = $request->image;
-            $store->qty = $request->qty;
-            $store->price_buy = $request->price_buy;
-            $store->price_sell = $request->price_sell;
-            $store->save();
+
+            // upload image
+            if($request->hasFile('image')) {
+
+                // ລຶບຮູບອັບເກົ່າ
+                if($store->image){
+                    if(file_exists(public_path($upload_path.'/'.$store->image))){
+                        unlink(public_path($upload_path.'/'.$store->image));
+                    }
+                }
+
+                // generate image name
+                $image_name = "img".time().'.'.$request->image->getClientOriginalExtension();
+                // upload image
+                $request->image->move(public_path($upload_path), $image_name);
+
+                /// ອັບເດດຂໍ້ມູນ
+                $store = Store::find($id);
+                $store->name = $request->name;
+                $store->category_id = $request->category_id;
+                $store->image = $image_name;
+                $store->qty = $request->qty;
+                $store->price_buy = $request->price_buy;
+                $store->price_sell = $request->price_sell;
+                $store->save();
+
+            } else {
+                $image_name = null;
+
+                if($request->image){
+
+                    $store = Store::find($id);
+                    $store->name = $request->name;
+                    $store->category_id = $request->category_id;
+                    // $store->image = $request->image;
+                    $store->qty = $request->qty;
+                    $store->price_buy = $request->price_buy;
+                    $store->price_sell = $request->price_sell;
+                    $store->save();
+
+
+                } else {
+
+                    // ລຶບຮູບອັບເກົ່າ
+                    if($store->image){
+                        if(file_exists(public_path($upload_path.'/'.$store->image))){
+                            unlink(public_path($upload_path.'/'.$store->image));
+                        }
+                    }
+
+
+                    $store = Store::find($id);
+                    $store->name = $request->name;
+                    $store->category_id = $request->category_id;
+                    $store->image = null;
+                    $store->qty = $request->qty;
+                    $store->price_buy = $request->price_buy;
+                    $store->price_sell = $request->price_sell;
+                    $store->save();
+
+                }
+            } 
+
+
+
+           
 
             $success = true;
             $message = "ປັບປຸງຂໍ້ມູນສຳເລັດ!";
@@ -125,6 +189,16 @@ class StoreController extends Controller
     {
         try {
             $store = Store::find($id);
+             // path image
+             $upload_path = "assets/img";
+            // ລຶບຮູບອັບເກົ່າ
+            if($store->image){
+                if(file_exists(public_path($upload_path.'/'.$store->image))){
+                    unlink(public_path($upload_path.'/'.$store->image));
+                }
+            }
+
+
             $store->delete();
 
             $success = true;

@@ -118,7 +118,10 @@
         <tbody>
           <tr v-for="item in ProductData.data" :key="item.id">
             <td>{{ item.id }}</td>
-            <td>{{ item.image }}</td>
+            <td>
+                <img :src="url + '/assets/img/'+item.image" v-if="item.image" class="img-fluid rounded bximg"  alt="...">
+                <img :src="url + '/assets/img/no_img.jpg'" v-else class="img-fluid rounded bximg"  alt="...">
+            </td>
             <td>{{ item.name }}</td>
             <td>{{ item.category_name }}</td>
             <td class="text-center">{{ formatPrice(item.qty) }}</td>
@@ -160,6 +163,7 @@ export default {
     },
     data() {
         return {
+            url: window.location.origin,
             ImagePreview: window.location.origin+'/assets/img/upload-img.png',
             ShowForm: false,
             ProductData: {
@@ -266,6 +270,12 @@ export default {
             axios.get(`api/product/edit/${id}`,{ headers:{ Authorization: 'Bearer '+this.store.getToken} }).then(res => {
                 this.FormProduct = res.data;
                 this.ShowForm = true;
+                    if(this.FormProduct.image){
+                        this.ImagePreview = this.url + '/assets/img/'+this.FormProduct.image;
+                    }else{
+                        this.ImagePreview = window.location.origin+'/assets/img/upload-img.png';
+                    }
+                        
             }).catch(err => {
                 console.log(err);
                 if(err.response){
@@ -335,7 +345,6 @@ export default {
                     if(res.data.success){
                         this.ShowForm = false;
                         this.GetProduct();
-
                         this.$swal({
                             toast: true,
                             position: "top-end",
@@ -507,5 +516,11 @@ export default {
         position: absolute;
         top: 0px;
         right: 20px;
+    }
+    .bximg{
+    width: 80px;
+    height: auto;
+    padding: 2px;
+    border: 1px solid #ced1d2;
     }
 </style>
