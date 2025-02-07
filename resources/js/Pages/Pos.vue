@@ -24,6 +24,7 @@
                         <span v-for="i in ListOrder" :key="i.id">
                             <span class="num-order"  v-if="item.id == i.id" > {{ i.qty }} </span>
                         </span>
+                        <span class="no-product" v-if="item.qty<=0" >ບໍ່ສິນຄ້າ</span>
                         <img class="card-img-top imgpos" v-if="item.image" :src="url + '/assets/img/'+item.image" >
                         <img class="card-img-top imgpos" v-else :src="url + '/assets/img/no_img.jpg'" >
                         <div class="card-body p-1 text-center">
@@ -44,9 +45,9 @@
                 <div class="card-body p-0">
                     <div class="p-3">
                         <label>ຊື່ລູກຄ້າ:</label>
-                        <input type="text" class="form-control mb-2" placeholder="...">
+                        <input type="text" v-model="customer_name" class="form-control mb-2" placeholder="...">
                         <label>ເບີໂທ:</label>
-                        <input type="text" class="form-control mb-2" placeholder="...">
+                        <input type="text" v-model="customer_tel" class="form-control mb-2" placeholder="...">
                     </div>
 
                     <div class="p-2 bg-info text-white ">
@@ -194,6 +195,8 @@ export default {
                 },
             Search: '',
             CashAmount:0,
+            customer_name:'',
+            customer_tel:''
         }
     },
     components: {
@@ -231,17 +234,41 @@ export default {
             let item = this.ProductData.data.find((i)=>i.id == id);
             let old_item = this.ListOrder.find((i)=>i.id == id);
 
-            if(old_item){
-                old_item.qty++;
+            if(item.qty>0){
+                    
+                    if(old_item){
+                        if(item.qty - old_item.qty>0){
+                            old_item.qty++;
+                        } else {
+                            this.$swal({
+                                        title:"ບໍ່ສາມາດຂາຍສິນຄ້າໄດ້!",
+                                        text:"ສິນຄ້າດັ່ງກ່າວໄດ້ໝົດແລ້ວ!",
+                                        showConfirmButton: false,
+                                        icon:"error",
+                                        timer:3500
+                                    });
+                        }
+                        
+                    } else {
+                        this.ListOrder.push({
+                            id: item.id,
+                            image: item.image,
+                            name: item.name,
+                            price: item.price_sell,
+                            qty: 1
+                        }); 
+                    }
             } else {
-                this.ListOrder.push({
-                    id: item.id,
-                    image: item.image,
-                    name: item.name,
-                    price: item.price_sell,
-                    qty: 1
-                }); 
+                this.$swal({
+                                        title:"ບໍ່ສາມາດຂາຍສິນຄ້າໄດ້!",
+                                        text:"ສິນຄ້າດັ່ງກ່າວໄດ້ໝົດແລ້ວ!",
+                                        showConfirmButton: false,
+                                        icon:"error",
+                                        timer:3500
+                                    });
             }
+
+            
 
             
         },
@@ -265,7 +292,64 @@ export default {
             $('#dialog_pay').modal('show');
         },
         Confirm_Pay(){
+            axios.post(`api/transection/add`,{
+                customer_name: this.customer_name,
+                customer_tel: this.customer_tel,
+                listorder: this.ListOrder
+            },{ headers:{ Authorization: 'Bearer '+this.store.getToken} }).then((res)=>{
 
+                if(res.data.success){
+
+                    this.ListOrder = [];
+                    this.customer_name = '';
+                    this.customer_tel = '';
+                    this.CashAmount = '';
+                    $('#dialog_pay').modal('hide');
+
+                    this.$swal({
+                            toast: true,
+                            position: "top-end",
+                            icon: "success",
+                            title: res.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                    // ກວດວ່າມີ bill_id ສົ່ງກັບມາຫຼືບໍ່
+                    if(res.data.bill_id){
+                        window.open(window.location.origin+"/api/bills/print/"+res.data.bill_id);
+                    } 
+
+                    // ອັບເດດລາຍການສິນຄ້າ
+
+                    this.GetProduct();
+
+                } else {
+                    this.$swal({
+                            icon: "error",
+                            title: "ຜິດຜາດ!",
+                            text: res.data.message,
+                            showConfirmButton: false,
+                            timer: 3500
+                        });
+                }
+
+            }).catch((err)=>{
+                if(err.response){
+                    if(err.response.status == 401){
+
+                        // clear localstorage
+                        localStorage.removeItem('web_token');
+                        localStorage.removeItem('web_user');
+
+                        // clear store
+                        this.store.logout();
+
+                        // redirect to login
+                        this.$router.push('/login');
+                    }   
+                }
+            })
         },
         formatPrice(value) {
             let val = (value / 1).toFixed(0).replace(",", ".");
@@ -353,5 +437,15 @@ export default {
     border-radius: 5px;
     padding: 2px;
     border: 1px solid #d8d8d9;
+    }
+
+    .no-product{
+        position: absolute;
+    background-color: #f5222296;
+    color: white;
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    top: 40px;
     }
 </style>

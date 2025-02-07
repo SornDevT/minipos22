@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\Category;
+use App\Models\Transaction;
 
 class StoreController extends Controller
 {
@@ -70,6 +71,22 @@ class StoreController extends Controller
             $store->price_buy = $request->price_buy;
             $store->price_sell = $request->price_sell;
             $store->save();
+
+            $product_id = $store->id;
+
+            /// add transection 
+
+            // create new transection
+            $tran_id = 'TRN'.date('YmdHis').rand(100,999);
+            $tran = new Transaction([
+                "tran_id" => $tran_id, // date(ymds).rand(1000,9999)
+                "tran_type" => "expense",
+                "product_id"=> $product_id,
+                "qty"=> $request->qty,
+                "price"=> $request->price_buy*$request->qty,
+                "detail"=> "ນຳເຂົ້າສິນຄ້າ ".$request->name
+            ]);
+            $tran->save();
 
             $success = true;
             $message = "ບັນທຶກຂໍ້ມູນສຳເລັດ!";
