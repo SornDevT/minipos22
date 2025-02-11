@@ -226,6 +226,14 @@ export default {
         }
     },
     methods: {
+
+        async openLink(link){
+            const response = await fetch(`${link}`,{ headers:{ Authorization: 'Bearer '+ this.store.getToken}});
+            const html = await response.text();
+            const blob = new Blob([html],{ type: "text/html"});
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, "_blank");
+        },
         AddNum(num){
             this.CashAmount = parseInt(this.CashAmount?this.CashAmount:0) + parseInt(num);
         },
@@ -317,7 +325,8 @@ export default {
 
                     // ກວດວ່າມີ bill_id ສົ່ງກັບມາຫຼືບໍ່
                     if(res.data.bill_id){
-                        window.open(window.location.origin+"/api/bills/print/"+res.data.bill_id);
+                        // window.open(window.location.origin+"/api/bills/print/"+res.data.bill_id);
+                        this.openLink(window.location.origin+"/api/bills/print/"+res.data.bill_id);
                     } 
 
                     // ອັບເດດລາຍການສິນຄ້າ

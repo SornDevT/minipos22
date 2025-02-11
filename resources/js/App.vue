@@ -95,8 +95,8 @@
                       </div>
                     </div>
                     <div class="flex-grow-1">
-                      <h6 class="mb-0">John Doe</h6>
-                      <small class="text-muted">Admin</small>
+                      <h6 class="mb-0">{{user.name}}</h6>
+                      <small class="text-muted">{{user.permission}}</small>
                     </div>
                   </div>
                 </a>
@@ -165,6 +165,7 @@
 
 <!-- Footer -->
 <footer class="content-footer footer bg-footer-theme" v-if="store.getToken">
+  
   <!-- {{ $router.currentRoute }} -->
     <!-- {{ store.getToken }} -->
   <div class="container-xxl">
@@ -220,9 +221,19 @@ export default {
     data() {
         return {
             url: window.location.href,
+            user:{
+              name:'',
+              permission:''
+            }
         }
     },
     methods: {
+      // test(){
+      //     const user = JSON.parse(this.store.getUser);
+      //     // console.log( typeof this.store.getUser)
+      //     console.log(user)
+      //     console.log(user.name)
+      // },  
       Logout(){
           axios.get('api/logout',{ headers: { Authorization: 'Bearer ' + this.store.getToken } }).then((res)=>{
            
@@ -241,7 +252,20 @@ export default {
               console.log(err);
           });
       }
+    },
+    created(){
+      this.user = JSON.parse(localStorage.getItem("web_user"));
+      // console.log(this.user.name)
+    },
+    watch:{
+      '$route'(){
+        if(localStorage.getItem("web_user")){
+           this.user = JSON.parse(localStorage.getItem("web_user"));
+        }
+       
+      }
     }
+
 }
 </script>
 <style lang="">

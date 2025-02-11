@@ -1,14 +1,14 @@
 
 import { createRouter, createWebHistory } from 'vue-router';
 
-import Store from '../Pages/Store.vue';
-import Pos from '../Pages/Pos.vue';
-import Transaction from '../Pages/Transaction.vue';
-import Report from '../Pages/Report.vue';
+// import Store from '../Pages/Store.vue';
+// import Pos from '../Pages/Pos.vue';
+// import Transaction from '../Pages/Transaction.vue';
+// import Report from '../Pages/Report.vue';
 import Login from '../Pages/Login.vue';
 import Register from '../Pages/Register.vue';
 import NoPage from '../Pages/NoPage.vue';
-import Category from '../Pages/Category.vue';
+// import Category from '../Pages/Category.vue';
 
 import { useStore } from '../Store/Auth';
 
@@ -22,8 +22,8 @@ const authMiddleware = (to, from, next) => {
     const store = useStore();
 
     if(token){
-        store.setToken(token);
-        store.setUser(user);
+        store.setToken(token); 
+        store.setUser(JSON.stringify(user));
         next();
         // console.log('middleware next');
     } else {
@@ -54,7 +54,7 @@ const routes = [
     {
         name: 'store',
         path: '/store',
-        component: Store,
+        component: ()=>import('../Pages/Store.vue'),
         meta: {
             middleware: [authMiddleware]
         }
@@ -62,7 +62,7 @@ const routes = [
     {
         name: 'category',
         path: '/cat',
-        component: Category,
+        component: ()=>import('../Pages/Category.vue'),
         meta: {
             middleware: [authMiddleware]
         }
@@ -70,7 +70,7 @@ const routes = [
     {
         name: 'pos',
         path: '/pos',
-        component: Pos,
+        component: ()=>import('../Pages/Pos.vue'),
         meta: {
             middleware: [authMiddleware]
         }
@@ -78,7 +78,7 @@ const routes = [
     {
         name: 'transaction',
         path: '/transaction',
-        component: Transaction,
+        component: ()=>import('../Pages/Transaction.vue'),
         meta: {
             middleware: [authMiddleware]
         }
@@ -86,7 +86,7 @@ const routes = [
     {
         name: 'report',
         path: '/report',
-        component: Report,
+        component: ()=>import('../Pages/Report.vue'),
         meta: {
             middleware: [authMiddleware]
         }

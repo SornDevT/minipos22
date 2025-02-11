@@ -47,6 +47,11 @@
                 </div>
                 <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 
+                <label class="form-label mt-2">ສິດຜູ້ໃຊ້</label>
+                <select v-model="permission" class=" form-select">
+                    <option value="admin"> Admin </option>
+                    <option value="user"> User </option>
+                </select>
               </div>
               <div class="alert alert-warning" role="alert" v-if="message_error">
                {{message_error}}
@@ -75,6 +80,7 @@ export default {
             user_name:'',
             email:'',
             password:'',
+            permission:'',
             password_confirmation:'',
             message_error:'',
         }
@@ -93,7 +99,8 @@ export default {
                     axios.post('api/register',{
                         user_name:this.user_name,
                         email:this.email,
-                        password:this.password
+                        password:this.password,
+                        permission: this.permission
                     }).then((res)=>{
 
                         console.log(res.data);

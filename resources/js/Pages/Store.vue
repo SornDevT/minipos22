@@ -20,7 +20,8 @@
         </div>
         <div class="col-lg-8">
             <div class="row">
-                <div class="col-lg-6"> {{ FormProduct }}
+                <div class="col-lg-6"> 
+                    <!-- {{ FormProduct }} -->
                     <div class="mb-3">
                         <label for="ProductName" class="form-label">ຊື່ສິນຄ້າ:</label>
                         <input type="text" class="form-control" id="ProductName" v-model="FormProduct.name" placeholder="...">
@@ -127,9 +128,9 @@
             <td class="text-center">{{ formatPrice(item.qty) }}</td>
             <td class="text-end">{{ formatPrice(item.price_buy) }}</td>
             <td class="text-center">
-              <div class="dropdown">
+              <div class="dropdown" v-if="user.permission=='admin'">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false"><i class="bx bx-dots-vertical-rounded"></i></button>
-                <div class="dropdown-menu" style="">
+                <div class="dropdown-menu"  >
                   <a class="dropdown-item" href="javascript:void(0);" @click="EditProduct(item.id)"><i class="bx bx-edit-alt me-1"></i> ແກ້ໄຂ</a>
                   <a class="dropdown-item" href="javascript:void(0);" @click="DelProduct(item.id)"><i class="bx bx-trash me-1"></i> ລຶບ</a>
                 </div>
@@ -142,7 +143,7 @@
 
       <Pagination :pagination="ProductData" :offset="4" @paginate="GetProduct($event)" />
 
-      <button @click="showAlert">Hello world</button>
+      <!-- <button @click="showAlert">Hello world</button> -->
 
     </div>
 
@@ -163,6 +164,7 @@ export default {
     },
     data() {
         return {
+            user:{},
             url: window.location.origin,
             ImagePreview: window.location.origin+'/assets/img/upload-img.png',
             ShowForm: false,
@@ -487,6 +489,7 @@ export default {
     created(){
         this.GetProduct();
         this.GetCategory();
+        this.user = JSON.parse(localStorage.getItem("web_user"));
     },
     watch: {
         Sort(){

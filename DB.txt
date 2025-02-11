@@ -22,6 +22,7 @@ All Table
     - name          string 
     - email         string 
     - password      string 
+    - permission    string
 
 4.  Table:  Bill (Model)
     Fill            Fill Type 

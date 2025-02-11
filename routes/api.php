@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\ReportController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -45,7 +46,8 @@ Route::group(['middleware' => 'auth:api'],
         // Route::delete('product/delete/{id}',[TransactionController::class,'delete']);
     });
 
-    // Route::group(['middleware' => 'auth:api'],
-    // function(){
+    Route::group(['middleware' => 'auth:api'],
+    function(){
         Route::get('bills/print/{id}',[BillController::class,'print_bill']);
-    // });
+        Route::post('report',[ReportController::class,'created_report']);
+    });
